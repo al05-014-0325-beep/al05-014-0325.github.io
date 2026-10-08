@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cartas para Mi novia 💖</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Dancing+Script:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            font-family: 'Quicksand', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .font-handwriting {
+            font-family: 'Dancing Script', cursive;
+        }
+
+        .font-note {
+            font-family: 'Caveat', cursive;
+        }
+
+        /* Romantic Gradient Background */
+        body {
+            background: linear-gradient(135deg, #ffdeeb 0%, #ffe6f0 50%, #ffd1e1 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Heart Canvas styling */
+        #heartCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Valentine Envelope Interactive Card */
+        .envelope-container {
+            position: relative;
+            width: 290px;
+            height: 200px;
+            margin: 0 auto;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        @media (min-width: 640px) {
+            .envelope-container {
+                width: 360px;
+                height: 240px;
+            }
+        }
+
+        /* Envelope Base */
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background-color: #ff6b8b;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            box-shadow: 0 15px 35px rgba(220, 38, 38, 0.25), 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s ease;
+        }
+
+        /* Top Flap */
+        .envelope::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 145px solid transparent;
+            border-right: 145px solid transparent;
+            border-top: 115px solid #ff5277;
+            transform-origin: top;
+            transition: transform 0.5s ease 0.2s, z-index 0.2s 0.2s;
+            z-index: 5;
+        }
+
+        @media (min-width: 640px) {
+            .envelope::before {
+                border-left-width: 180px;
+                border-right-width: 180px;
+                border-top-width: 135px;
+            }
+        }
+
+        /* Front Pocket */
+        .envelope-pocket {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 0;
+            border-left: 145px solid #ff85a1;
+            border-right: 145px solid #ff85a1;
+            border-bottom: 105px solid #ff7096;
+            border-bottom-left-radius: 14px;
+            border-bottom-right-radius: 14px;
+            z-index: 4;
+        }
+
+        @media (min-width: 640px) {
+            .envelope-pocket {
+                border-left-width: 180px;
+                border-right-width: 180px;
+                border-bottom-width: 130px;
+            }
+        }
+
+        /* The Letter inside */
+        .letter-card {
+            position: absolute;
+            bottom: 10px;
+            left: 5%;
+            width: 90%;
+            height: 88%;
+            background: #ffffff;
+            background-image: radial-gradient(#ffccd5 1px, transparent 0);
+            background-size: 16px 16px;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0.1s 0.3s;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 2px dashed #ffa6c1;
+        }
+
+        /* Open State classes */
+        .envelope-container.open .envelope::before {
+            transform: rotateX(180deg);
+            z-index: 2;
+        }
+
+        .envelope-container.open .letter-card {
+            transform: translateY(-120px) scale(1.05);
+            z-index: 6;
+            box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        @media (min-width: 640px) {
+            .envelope-container.open .letter-card {
+                transform: translateY(-140px) scale(1.08);
+            }
+        }
+
+        /* Floating Hearts Animations */
+        .floating-heart {
+            position: absolute;
+            pointer-events: none;
+            animation: floatUp 3s ease-in-out infinite;
+            opacity: 0;
+            color: #ff3366;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(0.6) rotate(0deg);
+                opacity: 0;
+            }
+            30% {
+                opacity: 0.9;
+            }
+            100% {
+                transform: translateY(-140px) scale(1.2) rotate(25deg);
+                opacity: 0;
+            }
+        }
+
+        .h1 { left: 15%; animation-delay: 0s; }
+        .h2 { left: 35%; animation-delay: 0.6s; }
+        .h3 { left: 55%; animation-delay: 1.2s; }
+        .h4 { left: 75%; animation-delay: 1.8s; }
+        .h5 { left: 88%; animation-delay: 2.3s; }
+
+        /* Slide Transitions */
+        .slide-enter-next {
+            animation: slideInRight 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+        .slide-enter-prev {
+            animation: slideInLeft 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(40px) scale(0.96); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-40px) scale(0.96); }
+            to { opacity: 1; transform: translateX(0) scale(1); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen justify-between select-none">
+
+    <!-- Background Canvas for Falling Hearts -->
+    <canvas id="heartCanvas"></canvas>
+
+    <!-- Header Navigation Bar -->
+    <header class="w-full px-4 py-4 flex justify-between items-center max-w-4xl mx-auto z-20">
+        <div class="flex items-center space-x-2">
+            <span class="text-3xl animate-bounce">💌</span>
+            <h1 class="text-2xl sm:text-3xl font-bold font-handwriting text-pink-700 tracking-wide">
+                Para Perlita
+            </h1>
+        </div>
+        
+        <!-- Action Buttons Top Right -->
+        <div class="flex items-center space-x-2 sm:space-x-3">
+            <!-- Heart Rain Toggle -->
+            <button id="heartRainBtn" title="Lluvia de corazones" class="p-2 sm:px-3 sm:py-1.5 bg-white/80 hover:bg-white text-pink-600 rounded-full shadow-sm hover:shadow transition flex items-center space-x-1.5 text-xs font-semibold border border-pink-200">
+                <i class="fa-solid fa-heart text-red-500"></i>
+                <span class="hidden sm:inline">Lluvia</span>
+            </button>
+
+            <!-- Music Player Toggle -->
+            <button id="musicBtn" title="Música Romántica" class="p-2 sm:px-3 sm:py-1.5 bg-white/80 hover:bg-white text-pink-600 rounded-full shadow-sm hover:shadow transition flex items-center space-x-1.5 text-xs font-semibold border border-pink-200">
+                <i id="musicIcon" class="fa-solid fa-music text-pink-500"></i>
+                <span class="hidden sm:inline" id="musicStatusText">Música</span>
+            </button>
+
+            <!-- Restore Defaults Button -->
+            <button id="resetDefaultsBtn" title="Restaurar cartas iniciales" class="p-2 sm:px-3 sm:py-1.5 bg-white/80 hover:bg-white text-gray-600 rounded-full shadow-sm hover:shadow transition flex items-center space-x-1 text-xs font-semibold border border-gray-200">
+                <i class="fa-solid fa-rotate-left text-gray-500"></i>
+                <span class="hidden sm:inline">Reiniciar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Carousel Container -->
+    <main class="flex-grow flex flex-col justify-center items-center px-4 py-2 my-auto z-20 w-full max-w-4xl mx-auto">
+        
+        <!-- Instruction Banner -->
+        <div class="text-center mb-4 sm:mb-6">
+            <p class="text-pink-700 text-xs sm:text-sm font-semibold bg-white/70 px-4 py-1.5 rounded-full inline-block border border-pink-200 shadow-sm animate-pulse">
+                ✨ <span id="tapInstruction">¡Haz clic en el sobre para abrir la carta!</span> ✨
+            </p>
+        </div>
+
+        <!-- Carousel Wrapper with Left/Right Arrows -->
+        <div class="w-full flex items-center justify-between sm:justify-center sm:space-x-8">
+            
+            <!-- Left Arrow Button -->
+            <button id="prevBtn" class="p-3 sm:p-4 bg-white/90 hover:bg-white text-pink-600 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition border border-pink-200 z-30 focus:outline-none">
+                <i class="fa-solid fa-chevron-left text-xl sm:text-2xl"></i>
+            </button>
+
+            <!-- Card Viewport -->
+            <div id="cardViewport" class="relative py-12 px-2 flex justify-center items-center min-h-[300px] sm:min-h-[340px]">
+                
+                <!-- Envelope Structure -->
+                <div id="envelopeContainer" class="envelope-container">
+                    
+                    <!-- Floating Hearts inside Envelope -->
+                    <div class="floating-heart h1"><i class="fa-solid fa-heart text-xl"></i></div>
+                    <div class="floating-heart h2"><i class="fa-solid fa-heart text-base"></i></div>
+                    <div class="floating-heart h3"><i class="fa-solid fa-heart text-2xl"></i></div>
+                    <div class="floating-heart h4"><i class="fa-solid fa-heart text-sm"></i></div>
+                    <div class="floating-heart h5"><i class="fa-solid fa-heart text-lg"></i></div>
+
+                    <!-- Outer Envelope -->
+                    <div class="envelope">
+                        <!-- Inside Letter Card -->
+                        <div class="letter-card">
+                            <span id="cardTitleTag" class="text-xs text-pink-400 font-bold uppercase tracking-widest mb-1">Para ti</span>
+                            <div id="cardMainText" class="text-pink-700 font-bold text-lg sm:text-2xl font-handwriting leading-snug px-2">
+                                Te Quiero Mucho Perlita &lt;3
+                            </div>
+                            <div class="mt-2 text-pink-400 text-xs">💖✨💖</div>
+                        </div>
+                        <div class="envelope-pocket"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Arrow Button -->
+            <button id="nextBtn" class="p-3 sm:p-4 bg-white/90 hover:bg-white text-pink-600 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition border border-pink-200 z-30 focus:outline-none">
+                <i class="fa-solid fa-chevron-right text-xl sm:text-2xl"></i>
+            </button>
+        </div>
+
+        <!-- Card Action Buttons (Edit & Delete Current Card) -->
+        <div id="cardActionsBar" class="flex items-center space-x-3 mt-3">
+            <button id="editCurrentCardBtn" class="px-3.5 py-1.5 bg-white/90 hover:bg-white text-amber-600 rounded-full shadow-sm hover:shadow border border-amber-200 text-xs font-bold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Editar esta carta</span>
+            </button>
+
+            <button id="deleteCurrentCardBtn" class="px-3.5 py-1.5 bg-white/90 hover:bg-white text-red-600 rounded-full shadow-sm hover:shadow border border-red-200 text-xs font-bold transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-trash-can"></i>
+                <span>Eliminar carta</span>
+            </button>
+        </div>
+
+        <!-- Subtitle / Footer Message under Card -->
+        <div class="mt-5 sm:mt-8 text-center max-w-md min-h-[48px] flex items-center justify-center">
+            <p id="cardSubText" class="hover-text text-pink-800 text-base sm:text-lg font-note font-bold bg-white/80 px-6 py-2 rounded-2xl shadow-sm border border-pink-200 tracking-wide transition-all duration-300">
+                - Yo sé que tú me amas y yo te amo -
+            </p>
+        </div>
+
+    </main>
+
+    <!-- Footer Section with Indicators & Main Add Button -->
+    <footer class="w-full py-5 px-4 z-20 flex flex-col items-center space-y-4 max-w-4xl mx-auto">
+        
+        <!-- Pagination Dots -->
+        <div id="dotsContainer" class="flex items-center space-x-2">
+            <!-- Dots generated dynamically -->
+        </div>
+
+        <!-- Bottom Toolbar Row -->
+        <div class="flex items-center space-x-4">
+            <!-- Counter Badge -->
+            <span id="counterBadge" class="bg-pink-600 text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-sm">
+                Carta 1 de 5
+            </span>
+
+            <!-- Prominent Add Card Button -->
+            <button id="openAddModalBtn" class="bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white text-xs font-bold px-4 py-1.5 rounded-full shadow-md hover:shadow-lg transition flex items-center space-x-1.5">
+                <i class="fa-solid fa-circle-plus text-sm"></i>
+                <span>Añadir Nueva Carta</span>
+            </button>
+        </div>
+    </footer>
+
+    <!-- MODAL 1: Add or Edit Card Modal -->
+    <div id="cardModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-2 border-pink-200 transform transition-all">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modalTitle" class="text-xl font-bold text-pink-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-heart-circle-plus"></i>
+                    <span>Escribir Nueva Carta</span>
+                </h3>
+                <button id="closeCardModalBtn" class="text-gray-400 hover:text-gray-600 p-1">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="cardForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-pink-600 uppercase mb-1">Título / Etiqueta de la Carta</label>
+                    <input id="titleInput" type="text" class="w-full p-3 border-2 border-pink-200 rounded-xl focus:border-pink-500 focus:outline-none text-gray-700 font-semibold text-sm" placeholder="Ej. Para ti / Carta #1 / Fecha especial">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-pink-600 uppercase mb-1">Mensaje Principal (Dentro del sobre)</label>
+                    <textarea id="mainTextInput" required rows="3" class="w-full p-3 border-2 border-pink-200 rounded-xl focus:border-pink-500 focus:outline-none text-gray-700 font-semibold text-sm" placeholder="Ej. Eres lo mejor que me ha pasado en la vida 💕"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-pink-600 uppercase mb-1">Frase Inferior (Debajo de la carta)</label>
+                    <input id="subTextInput" required type="text" class="w-full p-3 border-2 border-pink-200 rounded-xl focus:border-pink-500 focus:outline-none text-gray-700 font-semibold text-sm" placeholder="Ej. - Te amo con todo mi corazón -">
+                </div>
+
+                <div class="flex space-x-3 pt-2">
+                    <button type="button" id="cancelCardModalBtn" class="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="w-1/2 py-2.5 bg-pink-500 hover:bg-pink-600 text-white font-bold rounded-xl text-sm shadow-md transition">
+                        Guardar Carta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Confirm Delete Modal -->
+    <div id="deleteModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-2 border-red-200 text-center">
+            <div class="w-12 h-12 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-trash-can"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-1">¿Eliminar esta carta?</h3>
+            <p class="text-xs text-gray-500 mb-5">Esta acción no se puede deshacer. La carta será borrada permanentemente.</p>
+            
+            <div class="flex space-x-3">
+                <button id="cancelDeleteBtn" class="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition">
+                    Cancelar
+                </button>
+                <button id="confirmDeleteBtn" class="w-1/2 py-2.5 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl text-sm shadow-md transition">
+                    Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Confirm Reset Defaults Modal -->
+    <div id="resetModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border-2 border-amber-200 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-500 rounded-full flex items-center justify-center mx-auto mb-3 text-xl">
+                <i class="fa-solid fa-rotate-left"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-800 mb-1">¿Restaurar cartas iniciales?</h3>
+            <p class="text-xs text-gray-500 mb-5">Se eliminarán las cartas personalizadas y se restaurarán las cartas por defecto.</p>
+            
+            <div class="flex space-x-3">
+                <button id="cancelResetBtn" class="w-1/2 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-sm transition">
+                    Cancelar
+                </button>
+                <button id="confirmResetBtn" class="w-1/2 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-sm shadow-md transition">
+                    Restaurar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900/90 text-white text-xs font-bold px-4 py-2.5 rounded-full shadow-xl z-50 hidden opacity-0 transition-opacity duration-300 pointer-events-none flex items-center space-x-2">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-green-400"></i>
+        <span id="toastMessage">Acción completada</span>
+    </div>
+
+    <script>
+        /* Default Romantic Cards for Perlita */
+        const DEFAULT_CARDS = [
+            {
+                title: "Carta 1",
+                mainText: "Te Quiero Mucho Perlita <3",
+                subText: "- Yo sé que tú me amas y yo te amo -"
+            },
+            {
+                title: "Carta 2",
+                mainText: "Eres la persona más especial de mi vida ✨",
+                subText: "- Gracias por hacer cada día bonito -"
+            },
+            {
+                title: "Carta 3",
+                mainText: "Cada segundo a tu lado vale la pena 💖",
+                subText: "- Siempre juntos -"
+            },
+            {
+                title: "Carta 4",
+                mainText: "Eres mi lugar favorito en el mundo 🌸",
+                subText: "- Mi sonrisa preferida es la tuya -"
+            },
+            {
+                title: "Carta 5",
+                mainText: "¿Hacemos otra cita pronto? 😊",
+                subText: "- Te amo de aquí a la luna -"
+            }
+        ];
+
+        /* Application State */
+        let cards = [];
+        let currentIndex = 0;
+        let isEnvelopeOpen = false;
+        let modalMode = 'add'; // 'add' or 'edit'
+
+        // DOM Elements
+        const envelopeContainer = document.getElementById('envelopeContainer');
+        const cardTitleTag = document.getElementById('cardTitleTag');
+        const cardMainText = document.getElementById('cardMainText');
+        const cardSubText = document.getElementById('cardSubText');
+        const cardViewport = document.getElementById('cardViewport');
+        const counterBadge = document.getElementById('counterBadge');
+        const dotsContainer = document.getElementById('dotsContainer');
+        const tapInstruction = document.getElementById('tapInstruction');
+        const cardActionsBar = document.getElementById('cardActionsBar');
+
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        // Modal Elements
+        const cardModal = document.getElementById('cardModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const cardForm = document.getElementById('cardForm');
+        const titleInput = document.getElementById('titleInput');
+        const mainTextInput = document.getElementById('mainTextInput');
+        const subTextInput = document.getElementById('subTextInput');
+
+        const deleteModal = document.getElementById('deleteModal');
+        const resetModal = document.getElementById('resetModal');
+
+        /* Initialize Cards from LocalStorage */
+        function loadCards() {
+            const stored = localStorage.getItem('perlita_romantic_cards');
+            if (stored) {
+                try {
+                    cards = JSON.parse(stored);
+                } catch(e) {
+                    cards = [...DEFAULT_CARDS];
+                }
+            } else {
+                cards = [...DEFAULT_CARDS];
+            }
+
+            if (!Array.isArray(cards) || cards.length === 0) {
+                cards = [...DEFAULT_CARDS];
+            }
+        }
+
+        /* Save Cards array to LocalStorage */
+        function saveCards() {
+            localStorage.setItem('perlita_romantic_cards', JSON.stringify(cards));
+        }
+
+        /* Initialize App */
+        function initApp() {
+            loadCards();
+            renderCard(0, 'none');
+            setupEventListeners();
+            initHeartCanvas();
+        }
+
+        /* Render Current Card */
+        function renderCard(index, direction = 'next') {
+            // Close envelope when switching cards
+            isEnvelopeOpen = false;
+            envelopeContainer.classList.remove('open');
+            tapInstruction.textContent = "¡Haz clic en el sobre para abrir la carta!";
+
+            if (cards.length === 0) {
+                // Empty state handling
+                cardTitleTag.textContent = "Sin Cartas";
+                cardMainText.innerHTML = "¡Aún no hay cartas!<br>Haz clic abajo para crear una 💌";
+                cardSubText.textContent = "- Escribe tu primera carta para Perlita -";
+                counterBadge.textContent = "0 Cartas";
+                dotsContainer.innerHTML = '';
+                cardActionsBar.classList.add('hidden');
+                prevBtn.classList.add('opacity-40', 'pointer-events-none');
+                nextBtn.classList.add('opacity-40', 'pointer-events-none');
+                return;
+            }
+
+            cardActionsBar.classList.remove('hidden');
+            prevBtn.classList.remove('opacity-40', 'pointer-events-none');
+            nextBtn.classList.remove('opacity-40', 'pointer-events-none');
+
+            // Slide Animation
+            cardViewport.classList.remove('slide-enter-next', 'slide-enter-prev');
+            void cardViewport.offsetWidth; // Trigger layout reflow
+            if (direction === 'next') {
+                cardViewport.classList.add('slide-enter-next');
+            } else if (direction === 'prev') {
+                cardViewport.classList.add('slide-enter-prev');
+            }
+
+            // Update content
+            const card = cards[index];
+            cardTitleTag.textContent = card.title || `Para ti`;
+            cardMainText.innerHTML = card.mainText;
+            cardSubText.textContent = card.subText;
+
+            // Counter badge
+            counterBadge.textContent = `Carta ${index + 1} de ${cards.length}`;
+
+            // Render pagination dots
+            renderDots();
+        }
+
+        /* Render Pagination Dots */
+        function renderDots() {
+            dotsContainer.innerHTML = '';
+            cards.forEach((_, idx) => {
+                const dot = document.createElement('button');
+                dot.className = `w-3 h-3 rounded-full transition-all duration-300 ${
+                    idx === currentIndex 
+                        ? 'bg-pink-600 w-7 shadow-sm' 
+                        : 'bg-pink-300 hover:bg-pink-400'
+                }`;
+                dot.title = `Ir a carta ${idx + 1}`;
+                dot.addEventListener('click', () => {
+                    if (idx !== currentIndex) {
+                        const dir = idx > currentIndex ? 'next' : 'prev';
+                        currentIndex = idx;
+                        renderCard(currentIndex, dir);
+                    }
+                });
+                dotsContainer.appendChild(dot);
+            });
+        }
+
+        /* Toggle Envelope Open/Close */
+        function toggleEnvelope() {
+            if (cards.length === 0) return;
+
+            isEnvelopeOpen = !isEnvelopeOpen;
+            if (isEnvelopeOpen) {
+                envelopeContainer.classList.add('open');
+                tapInstruction.textContent = "✨ ¡Te amo Perlita! ✨";
+                triggerBurstHearts();
+            } else {
+                envelopeContainer.classList.remove('open');
+                tapInstruction.textContent = "¡Haz clic en el sobre para abrir la carta!";
+            }
+        }
+
+        /* Navigation */
+        function goToNext() {
+            if (cards.length === 0) return;
+            currentIndex = (currentIndex + 1) % cards.length;
+            renderCard(currentIndex, 'next');
+        }
+
+        function goToPrev() {
+            if (cards.length === 0) return;
+            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+            renderCard(currentIndex, 'prev');
+        }
+
+        /* Toast Notifications */
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMessage.textContent = message;
+            toastIcon.className = isError 
+                ? "fa-solid fa-circle-exclamation text-red-400" 
+                : "fa-solid fa-circle-check text-green-400";
+
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.remove('opacity-0'), 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0');
+                setTimeout(() => toast.classList.add('hidden'), 300);
+            }, 2500);
+        }
+
+        /* Open Modal for Adding New Card */
+        function openAddModal() {
+            modalMode = 'add';
+            modalTitle.innerHTML = `<i class="fa-solid fa-heart-circle-plus"></i><span>Escribir Nueva Carta</span>`;
+            cardForm.reset();
+            titleInput.value = `Carta ${cards.length + 1}`;
+            cardModal.classList.remove('hidden');
+        }
+
+        /* Open Modal for Editing Current Card */
+        function openEditModal() {
+            if (cards.length === 0) return;
+            modalMode = 'edit';
+            modalTitle.innerHTML = `<i class="fa-solid fa-pen-to-square"></i><span>Editar Carta Actual</span>`;
+            
+            const currentCard = cards[currentIndex];
+            titleInput.value = currentCard.title || `Carta ${currentIndex + 1}`;
+            mainTextInput.value = currentCard.mainText;
+            subTextInput.value = currentCard.subText;
+            
+            cardModal.classList.remove('hidden');
+        }
+
+        /* Handle Add / Edit Form Submit */
+        cardForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const title = titleInput.value.trim() || `Carta ${currentIndex + 1}`;
+            const mainText = mainTextInput.value.trim();
+            const subText = subTextInput.value.trim();
+
+            if (!mainText || !subText) return;
+
+            if (modalMode === 'add') {
+                cards.push({ title, mainText, subText });
+                currentIndex = cards.length - 1;
+                saveCards();
+                renderCard(currentIndex, 'next');
+                showToast("¡Carta agregada con éxito! 💕");
+            } else if (modalMode === 'edit') {
+                cards[currentIndex] = { title, mainText, subText };
+                saveCards();
+                renderCard(currentIndex, 'none');
+                showToast("¡Carta actualizada correctamente! ✨");
+            }
+
+            cardModal.classList.add('hidden');
+        });
+
+        /* Handle Card Delete */
+        function deleteCurrentCard() {
+            if (cards.length === 0) return;
+            
+            cards.splice(currentIndex, 1);
+            saveCards();
+
+            if (cards.length === 0) {
+                currentIndex = 0;
+            } else if (currentIndex >= cards.length) {
+                currentIndex = cards.length - 1;
+            }
+
+            renderCard(currentIndex, 'prev');
+            deleteModal.classList.add('hidden');
+            showToast("Carta eliminada", true);
+        }
+
+        /* Handle Reset Defaults */
+        function resetToDefaults() {
+            cards = [...DEFAULT_CARDS];
+            saveCards();
+            currentIndex = 0;
+            renderCard(0, 'none');
+            resetModal.classList.add('hidden');
+            showToast("Se han restaurado las cartas iniciales 🌸");
+        }
+
+        /* Burst Hearts FX */
+        function triggerBurstHearts() {
+            const rect = envelopeContainer.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            for (let i = 0; i < 10; i++) {
+                createHeartParticle(centerX, centerY);
+            }
+        }
+
+        function createHeartParticle(x, y) {
+            const heart = document.createElement('div');
+            heart.className = 'fixed pointer-events-none text-pink-500 z-40 text-xl';
+            heart.innerHTML = '💖';
+            heart.style.left = `${x}px`;
+            heart.style.top = `${y}px`;
+
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = 3 + Math.random() * 4;
+            const vx = Math.cos(angle) * velocity;
+            const vy = Math.sin(angle) * velocity - 2;
+
+            document.body.appendChild(heart);
+
+            let opacity = 1;
+            let currentX = x;
+            let currentY = y;
+
+            const anim = setInterval(() => {
+                currentX += vx;
+                currentY += vy;
+                opacity -= 0.03;
+
+                heart.style.left = `${currentX}px`;
+                heart.style.top = `${currentY}px`;
+                heart.style.opacity = opacity;
+
+                if (opacity <= 0) {
+                    clearInterval(anim);
+                    heart.remove();
+                }
+            }, 20);
+        }
+
+        /* Falling Hearts Canvas FX */
+        let heartCanvas, ctx;
+        let heartParticles = [];
+        let isHeartRainActive = false;
+
+        function initHeartCanvas() {
+            heartCanvas = document.getElementById('heartCanvas');
+            ctx = heartCanvas.getContext('2d');
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+        }
+
+        function resizeCanvas() {
+            if (heartCanvas) {
+                heartCanvas.width = window.innerWidth;
+                heartCanvas.height = window.innerHeight;
+            }
+        }
+
+        function toggleHeartRain() {
+            isHeartRainActive = !isHeartRainActive;
+            const heartRainBtn = document.getElementById('heartRainBtn');
+            if (isHeartRainActive) {
+                heartRainBtn.classList.add('bg-pink-500', 'text-white');
+                heartRainBtn.classList.remove('bg-white/80', 'text-pink-600');
+                showToast("Lluvia de corazones activada 💕");
+                animateHearts();
+            } else {
+                heartRainBtn.classList.remove('bg-pink-500', 'text-white');
+                heartRainBtn.classList.add('bg-white/80', 'text-pink-600');
+                heartParticles = [];
+                ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+                showToast("Lluvia desactivada");
+            }
+        }
+
+        function animateHearts() {
+            if (!isHeartRainActive) return;
+
+            ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+
+            if (heartParticles.length < 35) {
+                heartParticles.push({
+                    x: Math.random() * heartCanvas.width,
+                    y: -20,
+                    size: Math.random() * 14 + 10,
+                    speedY: Math.random() * 2 + 1,
+                    opacity: Math.random() * 0.7 + 0.3
+                });
+            }
+
+            for (let i = 0; i < heartParticles.length; i++) {
+                let p = heartParticles[i];
+                p.y += p.speedY;
+                p.x += Math.sin(p.y / 30) * 0.8;
+
+                ctx.save();
+                ctx.globalAlpha = p.opacity;
+                ctx.font = `${p.size}px sans-serif`;
+                ctx.fillText('💖', p.x, p.y);
+                ctx.restore();
+
+                if (p.y > heartCanvas.height) {
+                    heartParticles.splice(i, 1);
+                    i--;
+                }
+            }
+
+            requestAnimationFrame(animateHearts);
+        }
+
+        /* Romantic Audio Synth */
+        let audioCtx = null;
+        let isPlayingMusic = false;
+        let musicInterval = null;
+
+        function toggleMusic() {
+            const musicBtn = document.getElementById('musicBtn');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicStatusText = document.getElementById('musicStatusText');
+
+            if (isPlayingMusic) {
+                isPlayingMusic = false;
+                if (musicInterval) clearInterval(musicInterval);
+                musicIcon.className = "fa-solid fa-music text-pink-500";
+                musicStatusText.textContent = "Música";
+                musicBtn.classList.remove('border-pink-500', 'bg-pink-50');
+                showToast("Música pausada");
+            } else {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                isPlayingMusic = true;
+                musicIcon.className = "fa-solid fa-volume-high text-pink-500 animate-pulse";
+                musicStatusText.textContent = "Sonando ♪";
+                musicBtn.classList.add('border-pink-500', 'bg-pink-50');
+                showToast("Música romántica activada 🎵");
+
+                const notes = [261.63, 329.63, 392.00, 440.00, 392.00, 329.63, 293.66, 349.23, 440.00, 523.25];
+                let noteIdx = 0;
+
+                musicInterval = setInterval(() => {
+                    if (!audioCtx || !isPlayingMusic) return;
+                    try {
+                        const osc = audioCtx.createOscillator();
+                        const gain = audioCtx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(notes[noteIdx % notes.length], audioCtx.currentTime);
+                        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 1.2);
+                        osc.connect(gain);
+                        gain.connect(audioCtx.destination);
+                        osc.start();
+                        osc.stop(audioCtx.currentTime + 1.2);
+                        noteIdx++;
+                    } catch(e) {}
+                }, 600);
+            }
+        }
+
+        /* Event Listeners Setup */
+        function setupEventListeners() {
+            // Envelope open click
+            envelopeContainer.addEventListener('click', toggleEnvelope);
+
+            // Nav buttons
+            prevBtn.addEventListener('click', goToPrev);
+            nextBtn.addEventListener('click', goToNext);
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') goToNext();
+                if (e.key === 'ArrowLeft') goToPrev();
+            });
+
+            // Touch Swipe Gestures
+            let touchStartX = 0;
+            let touchEndX = 0;
+
+            cardViewport.addEventListener('touchstart', (e) => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            cardViewport.addEventListener('touchend', (e) => {
+                touchEndX = e.changedTouches[0].screenX;
+                if (touchStartX - touchEndX > 50) goToNext();
+                if (touchEndX - touchStartX > 50) goToPrev();
+            }, { passive: true });
+
+            // Management Buttons
+            document.getElementById('openAddModalBtn').addEventListener('click', openAddModal);
+            document.getElementById('editCurrentCardBtn').addEventListener('click', openEditModal);
+            document.getElementById('deleteCurrentCardBtn').addEventListener('click', () => deleteModal.classList.remove('hidden'));
+            document.getElementById('resetDefaultsBtn').addEventListener('click', () => resetModal.classList.remove('hidden'));
+
+            // Modal Close Buttons
+            document.getElementById('closeCardModalBtn').addEventListener('click', () => cardModal.classList.add('hidden'));
+            document.getElementById('cancelCardModalBtn').addEventListener('click', () => cardModal.classList.add('hidden'));
+
+            document.getElementById('cancelDeleteBtn').addEventListener('click', () => deleteModal.classList.add('hidden'));
+            document.getElementById('confirmDeleteBtn').addEventListener('click', deleteCurrentCard);
+
+            document.getElementById('cancelResetBtn').addEventListener('click', () => resetModal.classList.add('hidden'));
+            document.getElementById('confirmResetBtn').addEventListener('click', resetToDefaults);
+
+            // Audio & FX
+            document.getElementById('heartRainBtn').addEventListener('click', toggleHeartRain);
+            document.getElementById('musicBtn').addEventListener('click', toggleMusic);
+        }
+
+        // Start application on window load
+        window.onload = initApp;
+    </script>
+</body>
+</html>
